@@ -27,14 +27,7 @@ Legend: ⬜ Not started · 🔵 In progress · ✅ Done · 🔴 Blocked · ⏸ P
 
 Overall: **4 / 49 steps** · Full checklist in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
 
-## Blocked / needs Kouki
 
-**Git and CI setup (whenever you're ready):**
-- Commit steps 0.1–0.4, then run `uv run pre-commit install` once in the repo.
-- Check the pre-commit size guard: stage a 6 MB dummy file and confirm the commit is rejected (roadmap E-02 acceptance; it needs a git repo, so Claude couldn't run it).
-- Push. `.github/workflows/ci.yml` runs on the push. Then add the badge under the title of this README: `![CI](https://github.com/<you>/<repo>/actions/workflows/ci.yml/badge.svg)`.
-
-**Coming up:** step 1.5, commit `PREREGISTRATION.md`, tag it `prereg-v1` and push the tag. `src/credit_risk/models/` is created only after that tag (see `research/decisions.md`).
 
 ## Key results
 
@@ -59,7 +52,6 @@ Filled in automatically from `results/*.csv` once the out-of-time run is done (s
 ## Repo map
 
 - [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): ordered build checklist
-- [CLAUDE.md](CLAUDE.md): context and rules for Claude Code
 - [phase2/PLAN.md](phase2/PLAN.md): approved plan (criteria, architecture, methods, tests, deployment)
 - [phase2/docs/](phase2/docs/): roadmap, data plan, interview kit, learning path, sources
 - [phase1/PHASE1_RESEARCH.md](phase1/PHASE1_RESEARCH.md): background research
