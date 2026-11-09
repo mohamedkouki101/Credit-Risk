@@ -1,0 +1,14 @@
+# Base configuration. Validated by credit_risk.config.BaseConfig.
+# Step 0.5 adds data_source once the licence decision (step 0.4, D-01) is recorded.
+
+# The one seed for the whole project. set_all_seeds() is called with it at every entry point.
+global_seed: 42
+
+# Relative to the repo root. raw/interim/processed are git-ignored.
+paths:
+  data_raw: data/raw
+  data_interim: data/interim
+  data_processed: data/processed
+  models: models
+  results: results
+  reports: reports
