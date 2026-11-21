@@ -1,0 +1,17 @@
+# LightGBM monotone constraints for M4 (roadmap M-06). Validated by credit_risk.config.MonotoneConfig.
+# Sign convention: the model predicts P(bad).
+#   +1 = PD rises as the feature rises, -1 = PD falls, unlisted features = 0 (free).
+
+constraints:
+  fico_mid: -1
+  credit_age_months: -1
+  annual_inc: -1
+  dti: 1
+  revol_util: 1
+  inq_last_6mths: 1
+  delinq_2yrs: 1
+  pub_rec: 1
+  pub_rec_bankruptcies: 1
+
+# monotone_constraints_method values tried (A-02 adds "basic" as an ablation).
+methods: [intermediate, advanced]

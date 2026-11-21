@@ -1,0 +1,32 @@
+# Reason families -> adverse-action reason text (roadmap X-02, Reg B).
+# Validated by credit_risk.config.ReasonTextConfig. Every whitelisted feature must sit in
+# exactly one family (checked across files).
+#
+# PLACEHOLDER: wording is a first draft modelled on common adverse-action phrasing.
+# It is reviewed in X-02 before any reason is shown in the app.
+
+placeholder: true
+max_reasons: 4
+
+families:
+  credit_score_inquiries:
+    features: [fico_mid, inq_last_6mths]
+    text: "Credit score too low or too many recent credit inquiries"
+  delinquency_public_records:
+    features: [delinq_2yrs, mths_since_last_delinq, pub_rec, pub_rec_bankruptcies, mths_since_last_record]
+    text: "Delinquency, public record or bankruptcy on credit report"
+  credit_history:
+    features: [credit_age_months, total_acc, open_acc, mort_acc]
+    text: "Length or depth of credit history"
+  revolving_credit:
+    features: [revol_util, revol_bal]
+    text: "Proportion of revolving credit in use is too high"
+  income_debt:
+    features: [annual_inc, dti]
+    text: "Income insufficient for amount of debt"
+  loan_request:
+    features: [loan_amnt, purpose, term]
+    text: "Amount or purpose of the loan requested"
+  employment_housing:
+    features: [emp_length, home_ownership, verification_status, application_type]
+    text: "Length of employment, residence or unverified information"

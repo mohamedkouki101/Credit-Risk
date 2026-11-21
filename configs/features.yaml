@@ -1,0 +1,69 @@
+# Application-time feature whitelist (data plan 5.2). Validated by credit_risk.config.FeaturesConfig.
+# Frozen at tag prereg-v1.
+#
+# Rule: a column is a model input only if it is listed under `features` (default deny).
+# The validator rejects any feature that uses a benchmark/fairness/outcome column or matches
+# an `excluded` pattern. Test T-01 checks the fitted X against this file.
+
+# Identifiers and the time index: never features. issue_d may feed a derivation (credit age).
+key_columns: [id, issue_d]
+
+features:
+  # Loan request
+  - {name: loan_amnt, kind: numeric}
+  - {name: purpose, kind: categorical, transform: "merge categories under 1% share into other"}
+  - {name: term, kind: categorical, transform: "constant in core (36-month only); kept for S-04"}
+  # Applicant
+  - {name: emp_length, kind: ordinal, transform: "'< 1 year'=0 ... '10+ years'=10; null = missing (the v3 file has nulls, no 'n/a')"}
+  - {name: home_ownership, kind: categorical, transform: "OTHER/NONE/ANY -> OTHER"}
+  - {name: annual_inc, kind: numeric, transform: log1p}
+  - {name: verification_status, kind: categorical}
+  - {name: application_type, kind: categorical, transform: "constant in core (Individual only)"}
+  # Affordability
+  - {name: dti, kind: numeric, transform: "below 0 or above 100 -> missing + flag"}
+  # Bureau
+  - {name: fico_mid, kind: numeric, sources: [fico_range_low, fico_range_high], transform: mean}
+  - {name: credit_age_months, kind: numeric, sources: [issue_d, earliest_cr_line], transform: "months(issue_d - earliest_cr_line); negative -> missing"}
+  - {name: inq_last_6mths, kind: numeric}
+  - {name: delinq_2yrs, kind: numeric}
+  - {name: mths_since_last_delinq, kind: numeric, transform: "missing -> own 'never' bin"}
+  - {name: mths_since_last_record, kind: numeric}
+  - {name: open_acc, kind: numeric}
+  - {name: total_acc, kind: numeric}
+  - {name: pub_rec, kind: numeric}
+  - {name: pub_rec_bankruptcies, kind: numeric}
+  - {name: revol_bal, kind: numeric, transform: log1p}
+  - {name: revol_util, kind: numeric, transform: "strip %; above 150 -> missing"}
+  - {name: mort_acc, kind: numeric}
+
+# Outputs of Lending Club's own risk model (installment is a function of int_rate).
+# Used only as the incumbent benchmark M1 (sub_grade -> ordinal 1-35). Never a feature.
+benchmark_only: [grade, sub_grade, int_rate, installment]
+
+# Used only to build fairness proxy groups (F-01). Never a model input.
+fairness_only: [addr_state, zip_code]
+
+# Used only to build the target and realised LGD. T-01 asserts none reach X.
+outcome_only: [loan_status, last_pymnt_d, total_rec_prncp, recoveries, collection_recovery_fee, funded_amnt]
+
+# Excluded with a reason (everything else not whitelisted is excluded by default).
+excluded:
+  - {pattern: "last_fico_range_*", reason: "post-origination: bureau pull after issue"}
+  - {pattern: "total_pymnt*", reason: "post-origination: payments received"}
+  - {pattern: "out_prncp*", reason: "post-origination: outstanding principal"}
+  - {pattern: last_credit_pull_d, reason: "post-origination: date of last bureau pull"}
+  - {pattern: "hardship_*", reason: "post-origination: hardship plan"}
+  - {pattern: "debt_settlement_*", reason: "post-origination: debt settlement"}
+  - {pattern: "settlement_*", reason: "post-origination: settlement"}
+  - {pattern: next_pymnt_d, reason: "post-origination: next payment date"}
+  - {pattern: pymnt_plan, reason: "post-origination: payment plan flag"}
+  - {pattern: collections_12_mths_ex_med, reason: "timing uncertain; excluded conservatively"}
+  - {pattern: open_acc_6m, reason: "added late 2015: mostly missing in training vintages, presence leaks the date"}
+  - {pattern: all_util, reason: "added late 2015: mostly missing in training vintages, presence leaks the date"}
+  - {pattern: il_util, reason: "added late 2015: mostly missing in training vintages, presence leaks the date"}
+  - {pattern: emp_title, reason: "free text: out of scope"}
+  - {pattern: title, reason: "free text: out of scope"}
+  - {pattern: desc, reason: "free text: out of scope"}
+  - {pattern: initial_list_status, reason: "investor-side field"}
+  - {pattern: policy_code, reason: "investor-side field"}
+  - {pattern: funded_amnt_inv, reason: "investor-side field"}

@@ -1,0 +1,15 @@
+# Business-view assumptions (roadmap EV-03, sensitivity SA-05).
+# Validated by credit_risk.config.BusinessConfig.
+# All values are illustrative and Unverified; every result using them is shown across the grid.
+
+lgd:
+  # Mean realised LGD on TRAIN charge-offs:
+  #   (funded_amnt - total_rec_prncp - recoveries + collection_recovery_fee) / funded_amnt, clipped to [0, 1]
+  # Outcome columns used for the loss parameter only, never as features.
+  source: realised_train_chargeoffs
+  sensitivity_pp: 0.10      # SA-05: LGD +/- 10 percentage points
+
+ead_column: loan_amnt       # EAD = loan amount (conservative). EL = PD x LGD x EAD.
+
+margin_grid: [0.05, 0.10, 0.15]   # interest margin m for the profit view
+approval_rates: [0.6, 0.7, 0.8]   # table cutoffs: bad rate and EL per $100 lent at each rate

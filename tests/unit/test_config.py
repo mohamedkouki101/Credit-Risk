@@ -16,6 +16,18 @@ paths:
   models: models
   results: results
   reports: reports
+data:
+  source: kaggle
+  kaggle:
+    dataset: owner/name
+    version: 1
+    file: f.csv.gz
+    size_bytes: 1
+    sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  zenodo:
+    record: 1
+    file: f.csv
+    md5: "00000000000000000000000000000000"
 """
 
 

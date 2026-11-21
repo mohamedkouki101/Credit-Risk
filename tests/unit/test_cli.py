@@ -23,11 +23,14 @@ EXPECTED_STAGES = (
 )
 
 
+IMPLEMENTED = {"data", "features"}
+
+
 def test_cli_exposes_planned_stages() -> None:
     assert tuple(STAGES) == EXPECTED_STAGES
 
 
-@pytest.mark.parametrize("stage", EXPECTED_STAGES)
+@pytest.mark.parametrize("stage", [s for s in EXPECTED_STAGES if s not in IMPLEMENTED])
 def test_unimplemented_stage_fails_loudly(stage: str, capsys: pytest.CaptureFixture[str]) -> None:
     assert main([stage]) == 1
     assert f"stage '{stage}' is not implemented yet" in capsys.readouterr().err
@@ -41,7 +44,7 @@ def test_unknown_stage_is_a_usage_error() -> None:
 
 def test_cli_seeds_from_base_config() -> None:
     # Checks the legacy global RNG on purpose: that is what the CLI must seed.
-    main(["data"])
+    main(["export"])  # a stage that is still a stub, so no real work runs
     after_cli = np.random.rand(3)  # noqa: NPY002
     set_all_seeds(42)
     assert np.array_equal(after_cli, np.random.rand(3))  # noqa: NPY002

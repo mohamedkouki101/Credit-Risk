@@ -55,7 +55,7 @@ The step-by-step build plan for Claude Code. It turns the approved Phase 2 plan 
   - Rule: licence not clearly permissive → PRIMARY = Zenodo (data plan §5.3b).
   - **Done when:** `research/data_decision.md` exists with screenshot path and hash.
 
-- [ ] **0.5 Write the configs** (inputs for D-02…D-06 and P-01)
+- [x] **0.5 Write the configs** (inputs for D-02…D-06 and P-01)
   - `configs/base.yaml` (paths, `global_seed: 42`, `data_source`), `target.yaml` (status mapping from data plan §5.3a), `splits.yaml` (§5.5 boundaries), `features.yaml` (§5.2 whitelist + excluded columns each with a reason), `monotone.yaml` (roadmap M-06 directions), `scorecard.yaml` (PDO 20, 600 at 50:1, binning params from M-03), `reason_text.yaml` (placeholder families), `business.yaml` (LGD source, margin grid {0.05, 0.10, 0.15}, approval rates {0.6, 0.7, 0.8}).
   - **Done when:** `config.py` loads all of them and a unit test asserts they validate.
 
@@ -65,22 +65,22 @@ The step-by-step build plan for Claude Code. It turns the approved Phase 2 plan 
 
 **Exit:** validated parquet, whitelist enforced by tests, data profile, splits frozen, `prereg-v1` tagged.
 
-- [ ] **1.1 ★ Download and load** (D-02)
+- [x] **1.1 ★ Download and load** (D-02)
   - `data/download.py::download(source)`; Zenodo streams and checks md5 `b019384d6bc65bf2a3e839362e4ff502`; Kaggle checks the hash recorded in 0.4. `DataIntegrityError` on mismatch.
   - `load_raw()` reads only whitelist + outcome + fairness columns (`usecols`, explicit dtypes).
   - **Done when:** unit test with a corrupted temp file raises `DataIntegrityError`; `data/README.md` explains how to get the data.
 
-- [ ] **1.2 ★ Target construction and vintage profile** (D-03)
+- [x] **1.2 ★ Target construction and vintage profile** (D-03)
   - `data/target.py::build_target(df, cfg)` → adds `y`, `segment`, `exclusion_reason` exactly per data plan §5.3a (individual, 36-month, issued 2007-06…2015-12; bad/good/indeterminate mapping).
   - `reports/data_profile.md` per issue quarter: rows, bad rate, indeterminate count, missingness. Flag any vintage with > 1% indeterminate.
   - **Done when:** T-06 passes (unknown `loan_status` raises); `python -m credit_risk data` regenerates the profile.
 
-- [ ] **1.3 ★ Cleaning, derived features, schema, SQL** (D-04)
+- [x] **1.3 ★ Cleaning, derived features, schema, SQL** (D-04)
   - `data/clean.py` (rules §5.4), `data/features.py::derive()` (`fico_mid`, `credit_age_months` from `issue_d`, log1p transforms), pandera `LoanSchema` in `data/schema.py`.
   - `sql/vintage_bad_rate.sql` run through DuckDB for the vintage tables.
   - **Done when:** T-01 (whitelist + leakage regex), T-04 (date arithmetic incl. leap years) and pandera validation pass; clean row count = raw − logged drops (asserted).
 
-- [ ] **1.4 Feature leakage and missingness audit** (D-05, parallel)
+- [x] **1.4 Feature leakage and missingness audit** (D-05, parallel)
   - Per feature: missing rate by target, train IV, IV per vintage; flag rule L6.
   - **Done when:** `research/feature_audit.md` has a keep/drop decision for every whitelist feature.
 
@@ -89,11 +89,11 @@ The step-by-step build plan for Claude Code. It turns the approved Phase 2 plan 
   - Then **stop** and ask Kouki to commit `PREREGISTRATION.md`, run `git tag prereg-v1` and push the tag. Do not write model code until Kouki confirms.
   - **Done when:** Kouki confirms the tag exists; `uv run python scripts/check_prereg.py` passes.
 
-- [ ] **1.6 ★ Split materialisation** (D-06)
+- [x] **1.6 ★ Split materialisation** (D-06)
   - `data/split.py::make_splits(df, cfg)`; write `data/processed/{train,valid,test,monitor}.parquet`. Bad rate per split into the data profile.
   - **Done when:** T-02 passes (strict date order, no ID overlap).
 
-- [ ] **1.7 Synthetic known-answer test** (T-05) — write it now so every later model is checked against it
+- [x] **1.7 Synthetic known-answer test** (T-05) — write it now so every later model is checked against it
   - `tests/synthetic/` per PLAN §9 (200k rows, known logit, Bayes AUC, closed-form AUC 0.760 / KS 0.383 check). Mark `slow` if it takes > 30 s.
   - **Done when:** the metric parts pass now; the model parts are marked `xfail` until Phase 2–3 code exists, then turned on.
 
@@ -103,7 +103,7 @@ The step-by-step build plan for Claude Code. It turns the approved Phase 2 plan 
 
 **Exit:** scorecard with PDO points, hand-checked example, validation metrics logged.
 
-- [ ] **2.1 ★ Metric library** (EV-01; moved early because every later step needs it)
+- [x] **2.1 ★ Metric library** (EV-01; moved early because every later step needs it)
   - `evaluation/metrics.py`: `auc, gini, ks, pr_auc, brier, log_loss, calibration_table, calibration_slope_intercept, delong_test, paired_bootstrap`.
   - **Done when:** T-10 (KS = `ks_2samp` = max(TPR−FPR)), T-11 (AUC invariances, Gini = 2·AUC−1) pass.
 

@@ -1,5 +1,4 @@
 # Base configuration. Validated by credit_risk.config.BaseConfig.
-# Step 0.5 adds data_source once the licence decision (step 0.4, D-01) is recorded.
 
 # The one seed for the whole project. set_all_seeds() is called with it at every entry point.
 global_seed: 42
@@ -12,3 +11,18 @@ paths:
   models: models
   results: results
   reports: reports
+
+# Primary data source, decided in step 0.4 (D-01). Evidence: research/data_decision.md.
+data:
+  source: kaggle
+  kaggle:
+    dataset: wordsforthewise/lending-club
+    version: 3
+    file: accepted_2007_to_2018Q4.csv.gz
+    size_bytes: 392582231
+    sha256: "55c16f75120f897683f02e7aabcf080d0e4a20c4832feb1d592cfa941bd62a2d"
+  # Fallback / literature benchmark (M-02). CC BY 4.0.
+  zenodo:
+    record: 11295916
+    file: LC_loans_granting_model_dataset.csv
+    md5: "b019384d6bc65bf2a3e839362e4ff502"

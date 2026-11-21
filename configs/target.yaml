@@ -1,0 +1,35 @@
+# Target definition (data plan 5.3a). Validated by credit_risk.config.TargetConfig.
+# Frozen at tag prereg-v1.
+#
+# Charge-off definition, not Basel 90 DPD: the file has no monthly delinquency history,
+# only loan_status at the 2018Q4 snapshot. PDs are "charge-off over the loan's life".
+
+population:
+  application_type: Individual
+  term: 36 months          # raw value is " 36 months"; cleaning rule 5.4.2 strips the space
+  issue_d_start: "2007-06"
+  issue_d_end: "2015-12"   # Dec-2015 36-month loans mature Dec-2018, at the snapshot: no right-censoring
+
+# y = 1 bad, y = 0 good, indeterminate = excluded and counted per vintage.
+# Every non-null loan_status in the v3 file is listed (9 values, checked 2026-11-09).
+# Any value not listed here makes build_target() raise (test T-06).
+# The 33 rows with null loan_status are footer artefacts, dropped by cleaning rule 5.4.4 first.
+status_map:
+  bad:
+    - Charged Off
+    - Default
+    - "Does not meet the credit policy. Status:Charged Off"
+  good:
+    - Fully Paid                                          # early repayment counts as good
+    - "Does not meet the credit policy. Status:Fully Paid"
+  indeterminate:
+    - Current
+    - In Grace Period
+    - Late (16-30 days)
+    - Late (31-120 days)
+
+# Loans whose status starts with this are kept with a flag; SA-04 drops them.
+policy_flag_prefix: "Does not meet the credit policy."
+
+# D-03 flags any vintage whose indeterminate share is above this (then SA-01 applies).
+indeterminate_flag_share: 0.01

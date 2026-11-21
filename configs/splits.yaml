@@ -1,0 +1,17 @@
+# Out-of-time splits on issue month (data plan 5.5). Never random.
+# Validated by credit_risk.config.SplitsConfig. Frozen at tag prereg-v1.
+# Bounds are inclusive "YYYY-MM".
+
+date_column: issue_d
+
+train:   {start: "2007-06", end: "2013-12"}   # fit binning, WOE, models
+valid:   {start: "2014-01", end: "2014-12"}   # tuning, calibration, imbalance arm, cutoff
+test:    {start: "2015-01", end: "2015-12"}   # OOT: touched ONCE, by `python -m credit_risk final`
+monitor: {start: "2016-01", end: "2018-12"}   # unlabelled, all terms: PSI and drift only
+
+# Rolling-origin backtest (M-07). Train always starts at train.start.
+# The validator rejects any fold that reaches the OOT test window.
+backtest_folds:
+  - {train_end: "2011-12", test: {start: "2012-01", end: "2012-12"}}
+  - {train_end: "2012-12", test: {start: "2013-01", end: "2013-12"}}
+  - {train_end: "2013-12", test: {start: "2014-01", end: "2014-12"}}

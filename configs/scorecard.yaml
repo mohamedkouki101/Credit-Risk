@@ -1,0 +1,20 @@
+# Champion scorecard (roadmap M-03, M-05). Validated by credit_risk.config.ScorecardConfig.
+
+# PDO scaling. Odds are good:bad.
+#   factor = pdo / ln 2 (about 28.85), offset = base_score - factor * ln(base_odds) (about 487.1)
+#   score  = offset + factor * ln(odds_good); 600 at 50:1, +20 points doubles the odds.
+scaling:
+  base_score: 600
+  base_odds: 50
+  pdo: 20
+
+# OptBinning BinningProcess settings (M-03). Missing values get their own bin.
+binning:
+  monotonic_trend: auto_asc_desc
+  min_bin_size: 0.05
+  iv_min: 0.02            # selection_criteria iv min (OptBinning tutorial threshold)
+  iv_max: 1.0             # selection_criteria iv max
+  iv_leakage_flag: 0.5    # IV above this triggers a leakage check (heuristic, Unverified)
+
+# Score bands: deciles on train, with observed bad rate and mean PD per band.
+n_score_bands: 10

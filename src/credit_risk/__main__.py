@@ -39,7 +39,29 @@ def _not_implemented(stage: str) -> StageFn:
     return run
 
 
+def run_data_cli() -> int:
+    """``data`` stage: hash-checked download, clean, target, profile (D-02..D-04)."""
+    from credit_risk.data.pipeline import run_data_stage  # heavy imports only when used
+
+    out = run_data_stage()
+    for path in vars(out).values():
+        print(f"wrote {path}")
+    return 0
+
+
+def run_features_cli() -> int:
+    """``features`` stage: out-of-time splits to parquet, T-02 checked (D-06)."""
+    from credit_risk.data.split import run_features_stage
+
+    out = run_features_stage()
+    for path in [*out.split_parquets.values(), out.summary_csv, out.profile_md]:
+        print(f"wrote {path}")
+    return 0
+
+
 STAGES: dict[str, StageFn] = {name: _not_implemented(name) for name in STAGE_HELP}
+STAGES["data"] = run_data_cli
+STAGES["features"] = run_features_cli
 
 
 def build_parser() -> argparse.ArgumentParser:

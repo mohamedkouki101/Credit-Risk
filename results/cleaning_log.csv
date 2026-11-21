@@ -1,0 +1,7 @@
+rule,kind,rows
+footer_empty_loan_amnt,drop,33
+issue_d_unparsed,drop,0
+earliest_cr_line_unparsed,drop,0
+duplicate_id,drop,0
+dti_out_of_range,set_missing,2563
+revol_util_over_150,set_missing,28
